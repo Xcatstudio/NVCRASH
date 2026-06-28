@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import asyncio
 import aiohttp
+import requests
+import time
 from threading import Thread
 from flask import Flask
 
@@ -18,6 +20,17 @@ def run():
 
 def keep_alive():
     t = Thread(target=run)
+    t.start()
+
+def ping_self():
+    def pinger():
+        while True:
+            try:
+                requests.get("http://127.0.0.1:8080")
+            except:
+                pass
+            time.sleep(300)
+    t = Thread(target=pinger, daemon=True)
     t.start()
 
 bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
@@ -75,4 +88,5 @@ async def nuke(ctx):
 import os
 
 keep_alive()
+ping_self()
 bot.run(os.getenv("TOKEN"))
