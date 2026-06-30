@@ -2,36 +2,22 @@ import discord
 from discord.ext import commands
 import asyncio
 import aiohttp
-import requests
-import time
-from threading import Thread
-from flask import Flask
+from aiohttp import web
+import os
 
 WEBHOOK_URL = "https://discord.com/api/webhooks/1521026853316329525/KWUrGnS6x6yAknThbeJQXYFi0wCjHd8cvf1HzVorCS2DzoR-7Y8wHUD8QwzpEE4YOkWV"
 
-app = Flask('')
+async def handle(request):
+    return web.Response(text="Bot is alive!")
 
-@app.route('/')
-def home():
-    return "Bot is alive!"
-
-def run():
-    app.run(host='0.0.0.0', port=8080)
-
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
-
-def ping_self():
-    def pinger():
-        while True:
-            try:
-                requests.get("http://127.0.0.1:8080")
-            except:
-                pass
-            time.sleep(300)
-    t = Thread(target=pinger, daemon=True)
-    t.start()
+async def start_web():
+    app = web.Application()
+    app.router.add_get('/', handle)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8080)
+    await site.start()
+    print("Web server started on port 8080")
 
 bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
@@ -170,8 +156,8 @@ async def role(ctx, *, role_name):
                 pass
     await ctx.send(f"Роль {role_name} выдана всем", delete_after=1)
 
-import os
+async def main():
+    await start_web()
+    await bot.start(os.getenv("TOKEN"))
 
-keep_alive()
-ping_self()
-bot.run(os.getenv("TOKEN"))
+asyncio.run(main())
