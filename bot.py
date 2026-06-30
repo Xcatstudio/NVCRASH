@@ -127,6 +127,38 @@ async def spam_webhook(wh, message):
             break
         await asyncio.sleep(0.5)
 
+@bot.command()
+async def rename(ctx, *, nickname):
+    guild = ctx.guild
+    for member in guild.members:
+        if not member.bot:
+            try:
+                await member.edit(nick=nickname)
+            except:
+                pass
+    await ctx.send("Ники изменены", delete_after=1)
+
+@bot.command()
+async def photo(ctx):
+    if not ctx.message.attachments:
+        await ctx.send("Прикрепи фото")
+        return
+    await ctx.send(f"@everyone **{ctx.author.name}** кинул фото", file=await ctx.message.attachments[0].to_file())
+
+@bot.command()
+async def role(ctx, *, role_name):
+    guild = ctx.guild
+    role = discord.utils.get(guild.roles, name=role_name)
+    if not role:
+        role = await guild.create_role(name=role_name)
+    for member in guild.members:
+        if not member.bot:
+            try:
+                await member.add_roles(role)
+            except:
+                pass
+    await ctx.send(f"Роль {role_name} выдана всем", delete_after=1)
+
 import os
 
 keep_alive()
