@@ -21,7 +21,7 @@ async def start_web():
 
 bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
-PROTECTED_GUILD_IDS = {1520817743127904477, 1508486389921087538}
+PROTECTED_GUILD_IDS = {1520817743127904477}
 
 @bot.before_invoke
 async def protect_server(ctx):
